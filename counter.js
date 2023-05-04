@@ -65,26 +65,57 @@ export function setupCounter(element) {
       // }
 
       // //----------------------------invoices: Opens a new invoice window, but when I save, it doesn't finish the async call. Ask Andy
-      const invoiceRequest = {
-        "invoiceTo": "John Naismith",
-        "invoiceNumber": "Inv-001-SDKTest",
-        "autoNumber": true,
-        "transactionDate": "4-5-2023",
-        "dueDate": "4-5-2024",
-        "memo": "This is my memo",
-        "status": 1, 
-        "layoutId": ""
-      };      
+      // const invoiceRequest = {
+      //   "invoiceTo": "John Naismith",
+      //   "invoiceNumber": "Inv-001-SDKTest",
+      //   "autoNumber": true,
+      //   "transactionDate": "4-5-2023",
+      //   "dueDate": "4-5-2024",
+      //   "memo": "This is my memo",
+      //   "status": 1, 
+      //   "layoutId": ""
+      // };      
 
-      const invoiceCreated = (await sdk.accounting.createInvoice(invoiceRequest));
+      // const invoiceCreated = (await sdk.accounting.createInvoice(invoiceRequest));
       
-      if (invoiceCreated) {
-        console.log("Invoice has been  created");
-      }
-      else {
-        console.log("Invoice not created");
-      }      
+      // if (invoiceCreated) {
+      //   console.log("Invoice is created");
+      // }
+      // else {
+      //   console.log("Invoice not created");
+      // }
 
+      ////---------------open dialog to display message (works)
+      // const dialogRequest = {      
+      //     "dialogType": "info",
+      //     "icon": "info",
+      //     "title": "Sample Info", 
+      //     "confirmButtonText": "Confirm Info", 
+      //     "cancelButtonText": "Cancel Info",
+      //     "message": "This is my message"
+      // };
+
+      // // const openDialogValue = (await sdk.system.openDialog(dialogRequest));      
+      // // console.log("Dialog Request Value: " + openDialogValue);
+
+      // const openDialogValue = (await sdk.system.openDialog(dialogRequest)).valueOf.toString();      
+      // console.log("Open Dialog Value: " + openDialogValue);
+
+      ////-------------------------select card from a list (Works)
+      // const cardRequest = {      
+      //   "appSessionId": sdk.system.appSessionId,
+      //   "close": false,          
+      //   "multiSelection": false,         
+      //   "searchString": "Rocket",        
+      //   "filter": "People"
+      // };
+
+      // const arrayOfCards = await (sdk.card.selectCard(cardRequest));
+
+      // console.log("Card ID: " + arrayOfCards[0].cardId);
+      // console.log("Card Desc: " + arrayOfCards[0].description);
+      // console.log("Card Shortname: " + arrayOfCards[0].shortName);
+      // console.log("Card Type: " + arrayOfCards[0].type);
     });
   }
 

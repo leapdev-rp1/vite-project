@@ -8,6 +8,21 @@
   </head>
   <body>
     <div id="app"></div>
-    <script type="module" src="/main.js"></script>
+    <script type="module" src="/main.js"></script>   
+
+    <script>
+      const loadMatter = document.getElementById('load-matter');
+
+      fetch('')
+        .then(response => response.json())
+        .then(responseJson => {
+
+            for (let {fact} of response                                                                                                                                                                        )
+
+        })
+
+    </script>
+
+    <button id="load-matter">Load Matters</button>
   </body>
 </html>
