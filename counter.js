@@ -86,20 +86,20 @@ export function setupCounter(element) {
       // }
 
       ////---------------open dialog to display message (works)
-      // const dialogRequest = {      
-      //     "dialogType": "info",
-      //     "icon": "info",
-      //     "title": "Sample Info", 
-      //     "confirmButtonText": "Confirm Info", 
-      //     "cancelButtonText": "Cancel Info",
-      //     "message": "This is my message"
-      // };
+      const dialogRequest = {      
+          "dialogType": "info",
+          "icon": "info",
+          "title": "Sample Info - Edited", 
+          "confirmButtonText": "Confirm Info", 
+          "cancelButtonText": "Cancel Info",
+          "message": "This is my message"
+      };
 
-      // // const openDialogValue = (await sdk.system.openDialog(dialogRequest));      
-      // // console.log("Dialog Request Value: " + openDialogValue);
+      // const openDialogValue = (await sdk.system.openDialog(dialogRequest));      
+      // console.log("Dialog Request Value: " + openDialogValue);
 
-      // const openDialogValue = (await sdk.system.openDialog(dialogRequest)).valueOf.toString();      
-      // console.log("Open Dialog Value: " + openDialogValue);
+      const openDialogValue = (await sdk.system.openDialog(dialogRequest)).valueOf.toString();      
+      console.log("Open Dialog Value: " + openDialogValue);
 
       ////-------------------------select card from a list (Works)
       // const cardRequest = {      
