@@ -1,4 +1,5 @@
 import { LeapHostSdkFactory } from '@leapdev/leap-host';
+import axios, {isCancel, AxiosError} from 'axios';
 
 const sdk = LeapHostSdkFactory.getInstance();
 
@@ -13,7 +14,10 @@ export function setupCounter(element) {
 
   if (!!sdk) {
     sdk.init().then(async () => {     
-      console.log('Hey, Im the matter ID: ' + sdk.leapContext.context.matterId);    
+      console.log('Hey, Im the matter ID: ' + sdk.leapContext.context.matterId);      
+
+      const tokenValue = (await sdk.getRefreshedAccessToken());
+      console.log("Auth Token: " + tokenValue);
 
       //openMatter(request: OpenMatterRequest): void;
 
@@ -34,16 +38,16 @@ export function setupCounter(element) {
 
       //});
 
-      // const cardId = (await sdk.card.createCard()).cardId;
-      // console.log("Card created: " + cardId);
+      const cardId = (await sdk.card.createCard()).cardId;
+      console.log("Card created: " + cardId);
 
       // //-------------------fees: Doesn't work yet
       // const createFeeEntryRequest = {
       //   "matterId": "8c857172-571e-564c-bc5a-7805cf76825c",
       //   "appSessionId": sdk.leapContext.hostInfo.appSessionId,        
         
-      //   "taskCodeId": "1",
-      //   "taxCodeId": "2",
+      //   "taskCodeId": "c05c4eca-394d-45dc-97b3-3c29e4ff4329",
+      //   "taxCodeId": "71e08981-c1be-4ead-88c9-eee1f5d3f32d",
       //   "quantity": 105,
       //   "amountEach": 200,
       //   "includeTax": false,
@@ -51,18 +55,12 @@ export function setupCounter(element) {
       //   "billingDescription": "",
       //   "billingMode": "1",
       //   "memo": "This is my memo",
-      //   "staffId": sdk.leapContext.hostInfo.staffId
+      //   "staffId": sdk.getDecodedRefreshedAccessToken().staffId
       // };      
 
-      // try {
-      //   console.log("Creating fee entry request"); 
-      //   sdk.accounting.createFeeEntry(createFeeEntryRequest);
-      //   console.log("Finished creating fee entry request"); 
-      // }
-      // catch(err) {
-      //   ////document.getElementById("demo").innerHTML = err.message;
-      //   console.log("Error is: " + err.message);
-      // }
+      // console.log("Creating fee entry request"); 
+      // sdk.accounting.createFeeEntry(createFeeEntryRequest);
+      // console.log("Finished creating fee entry request");
 
       // //----------------------------invoices: Opens a new invoice window, but when I save, it doesn't finish the async call. Ask Andy
       // const invoiceRequest = {
@@ -86,20 +84,20 @@ export function setupCounter(element) {
       // }
 
       ////---------------open dialog to display message (works)
-      const dialogRequest = {      
-          "dialogType": "info",
-          "icon": "info",
-          "title": "Sample Info - Edited", 
-          "confirmButtonText": "Confirm Info", 
-          "cancelButtonText": "Cancel Info",
-          "message": "This is my message"
-      };
+      // const dialogRequest = {      
+      //     "dialogType": "info",
+      //     "icon": "info",
+      //     "title": "Sample Info - Edited", 
+      //     "confirmButtonText": "Confirm Info", 
+      //     "cancelButtonText": "Cancel Info",
+      //     "message": "This is my message"
+      // };
 
       // const openDialogValue = (await sdk.system.openDialog(dialogRequest));      
       // console.log("Dialog Request Value: " + openDialogValue);
 
-      const openDialogValue = (await sdk.system.openDialog(dialogRequest)).valueOf.toString();      
-      console.log("Open Dialog Value: " + openDialogValue);
+      // const openDialogValue = (await sdk.system.openDialog(dialogRequest)).valueOf.toString();      
+      // console.log("Open Dialog Value: " + openDialogValue);
 
       ////-------------------------select card from a list (Works)
       // const cardRequest = {      
@@ -116,6 +114,26 @@ export function setupCounter(element) {
       // console.log("Card Desc: " + arrayOfCards[0].description);
       // console.log("Card Shortname: " + arrayOfCards[0].shortName);
       // console.log("Card Type: " + arrayOfCards[0].type);
+
+
+      ////-----------------call an API
+      // const gateway_test = axios.create({
+      //   baseURL: 'https://au-test.leap.services',
+      //   timeout: 9999,s
+      //   headers: {'x-api-key': 'L6MSX9QxZt4nL7dY48RdI7UR9XNEHuaj77j4KUWz'}        
+      // });
+
+      // // const response= await gateway_test.get('/api/v3/matters',{ headers: {'Authorization': `Bearer ${tokenValue}` }})
+      // //   console.log(response.data);
+      // //   console.log(response.status);
+      // //   console.log(response.statusText)
+      // //   console.log(response.headers);
+      // //   console.log(response.config);
+
+      // const response = await gateway_test.get('/api/v1/matters/' + sdk.leapContext.context.matterId, { headers: {'Authorization': `Bearer ${tokenValue}` }});
+      // console.log(response.data);
+      // console.log(response.status);
+
     });
   }
 

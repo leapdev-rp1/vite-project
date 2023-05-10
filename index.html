@@ -2,27 +2,56 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./style.css">
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />    
+    <title>LEAP Host SDK POC App</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>   
-
-    <!-- <script>
-      const loadMatter = document.getElementById('load-matter');
-
-      fetch('')
-        .then(response => response.json())
-        .then(responseJson => {
-
-            for (let {fact} of response                                                                                                                                                                        )
-
-        })
-
-    </script> -->
-
-    <button id="load-matter">Load Matters</button>
+    <script type="module" src="/main.js"></script>
+    <div id="app">  
+      <div>        
+        <h1 >LEAP Host SDK - POC App v1.005</h1>
+        <div>
+          <button id="btnToken" class="button" type="button">Auth Token</button><br/>
+          <input id="txtToken"></input>
+        </div>
+        <br/>
+        <div>
+          <button id="btnOpenMatter" class="button" type="button">Open Matter</button>          
+        </div>
+        <br/>
+        <div>
+          <button id="btnCreateCard" class="button" type="button">Create Card</button><br/>           
+          <input id="txtCreatedCard"></input>
+        </div>
+        <br/>
+        <div>
+          <button id="btnOpenDialogBox" class="button" type="button">Open Dialog Box</button><br/>                     
+        </div>
+        <br/>
+        <div>
+          <button id="btnSelectCard" class="button" type="button">Select Card</button><br/>
+          <input id="txtSelectedCard"></input>
+        </div>
+        <br/>
+        <div>
+          <button id="btnGetSingleMatter" class="button" type="button">Get Single Matter</button><br/>
+          <input id="txtSelectedSingleMatter"></input>
+        </div>
+        <br/>
+        <div>
+          <button id="btnGetAllMatters" class="button" type="button">Get ALL Matters</button>
+        </div>
+        <br/>
+        <div>
+          <button id="btnCreateFeeEntryRequest" class="button" type="button">Create Fee Entry Request</button>
+        </div>
+        <br/>
+        <div>
+          <button id="btnCreateInvoiceRequest" class="button" type="button">Create INVOICE Request</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

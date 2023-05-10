@@ -41,6 +41,7 @@ h1 {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  place-items: center;
 }
 
 .logo {
@@ -61,11 +62,11 @@ h1 {
 }
 
 .button {
-  color: greenyellow;
+  color: black;
 }
 
 .button {
-  color: greenyellow;
+  color: rgb(255, 255, 255);
 }
 
 .read-the-docs {
@@ -79,7 +80,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: rgb(193, 105, 4);
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -100,6 +101,6 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #370bc6;
   }
 }
