@@ -149,12 +149,44 @@ async function getAllMatters(){
     const allMattersToken = await sdk.getRefreshedAccessToken();
     console.log("Token: " + allMattersToken);
 
-    const response = await (gateway_test.get('/api/v3/matters', { headers: {'Authorization': `Bearer ${allMattersToken}` }}));
-      console.log(response.data);
-      console.log(response.status);
-      console.log(response.statusText)
-      console.log(response.headers);
-      console.log(response.config);  
+    const response = await (gateway_test.get('/api/v3/matters', { headers: {'Authorization': `Bearer ${allMattersToken}` }}));      
+      
+      if (response.status == "200" || response.status == "201"){ 
+
+        var table = "<table border=1>";
+        // add a row for name and marks
+        table += `<tr>
+            <th>Name</th>
+            <th colspan="2">Matter Details</th>
+          </tr>`;
+        // now add another row to show subject
+        table += `<tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Description</th>            
+          </tr>`;
+
+        var tr = "";
+
+        const myArray = response.data.matterList;
+
+        for(var i = 0; i<myArray.length; i++){
+
+          tr += "<tr>";
+            tr += `<td>${myArray[i].matterId}</td>`;
+            tr += `<td>${myArray[i].matterStatus}</td>`;
+            tr += `<td>${myArray[i].firstDescription + ` ` + myArray[i].customDescription}</td>`;
+          tr += "</tr>"          
+        }  
+        
+        table += tr + "</table>";
+
+        var allMattersDiv = document.getElementById('allMattersSection');
+        allMattersDiv.innerHTML += table;        
+      }
+      else{
+        console.log("Error: API Call did not return a success call"); 
+      }
 }
 
 //8. create fee entries- works, but clarify with Andy if it doesn't return any ID or async values
@@ -225,7 +257,5 @@ async function createInvoiceRequest(){
       catch(err){
         console.log(err);
       }
-      
-
 }
   
