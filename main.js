@@ -137,7 +137,18 @@ async function getSingleMatter(){
     const singleMatterToken = await sdk.getRefreshedAccessToken();
     const response = await (gateway_test.get('/api/v1/matters/' + sdk.leapContext.context.matterId, { headers: {'Authorization': `Bearer ${singleMatterToken}` }}));
       console.log(response.data);
-      console.log(response.status);        
+      console.log(response.status);   
+      
+      if (response.status == "200" || response.status == "201"){ 
+
+        const myObj = response.data;
+        
+         var singleMatterDiv = document.getElementById('singleMatterSection');
+         singleMatterDiv.innerHTML 
+           = "The matter details for matter ID " + myObj.matterId + " are: " +
+             " Description = " + myObj.description.firstLong + 
+             " State = " + myObj.state;
+      }
 }
 
 //7. call an API and get all matters - works
@@ -182,7 +193,7 @@ async function getAllMatters(){
         table += tr + "</table>";
 
         var allMattersDiv = document.getElementById('allMattersSection');
-        allMattersDiv.innerHTML += table;        
+        allMattersDiv.innerHTML = table;        
       }
       else{
         console.log("Error: API Call did not return a success call"); 
