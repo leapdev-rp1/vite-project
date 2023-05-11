@@ -5,20 +5,32 @@ import axios, {isCancel, AxiosError} from 'axios';
 
 // Define a variable for the SDK 
 const sdk = LeapHostSdkFactory.getInstance();
-//await sdk.init();
+//best practice: initialize the SDK once, in a central init code page of whatever framework they're using and then use the SDK all throughout their app
+sdk.init();
 
+function getCurrentDateTime(){
+  var currentdate = new Date();
+
+  return currentdate.getDate() + "/"
+  + (currentdate.getMonth()+1)  + "/" 
+  + currentdate.getFullYear() + " @ "  
+  + currentdate.getHours() + ":"  
+  + currentdate.getMinutes() + ":" 
+  + currentdate.getSeconds();
+}
+
+//1. get the token and current matter ID and display it - working
 let btnToken = document.getElementById("btnToken");
 btnToken.addEventListener("click", getToken);
 
-//best practice: initialize the SDK once
-sdk.init();
-
-//1. get the token and current matter ID and display it - working
 async function getToken(){
 
   console.log('Hey, Im the matter ID: ' + sdk.leapContext.context.matterId);
   const tokenValue = await sdk.getRefreshedAccessToken();
   document.getElementById("txtToken").value = tokenValue;  
+
+  var divToken = document.getElementById('divToken');
+  divToken.innerHTML = tokenValue;
 }
 
 // function getToken(){  
@@ -46,21 +58,6 @@ function openMatter(){
       sdk.matter.openMatter(request);   
 }
 
-// function openMatter(){
-//   if (!!sdk) {
-//     sdk.init().then(async () => {     
-//       //opens a matter
-//       //Request example:
-//        const request = {
-//          "matterId": "8c857172-571e-564c-bc5a-7805cf76825c",
-//          "appSessionId": sdk.leapContext.hostInfo.appSessionId
-//        };
-      
-//       sdk.matter.openMatter(request); 
-//     });
-//   }
-// }
-
 //3. create a card - doesn't usually work but works intermittently
 let btnCreateCard = document.getElementById("btnCreateCard");
 btnCreateCard.addEventListener("click", createCard);
@@ -68,10 +65,12 @@ btnCreateCard.addEventListener("click", createCard);
 async function createCard(){  
 
   try 
-  {
-    
+  {    
     const createdCard = await sdk.card.createCard();
-    console.log("Card created: " + createdCard);    
+    
+    var divCreatedCard = document.getElementById('divCreatedCard');
+    divCreatedCard.innerHTML = "Card ID Created: " + createdCard.cardId;
+
   }
   catch (err){
     console.log(err);
@@ -90,7 +89,7 @@ async function openDialogBox(){
       "title": "Sample Info - Edited", 
       "confirmButtonText": "Confirm Info", 
       "cancelButtonText": "Cancel Info",
-      "message": "This is my message - A21"
+      "message": "This is my message - " + getCurrentDateTime().toString()
   };
 
     const openDialogValue = await sdk.system.openDialog(dialogRequest);      
@@ -117,7 +116,8 @@ async function selectCard(){
   console.log("Card Shortname: " + arrayOfCards[0].shortName);
   console.log("Card Type: " + arrayOfCards[0].type);
 
-  document.getElementById("txtSelectedCard").value = arrayOfCards[0].cardId;
+  var divSelectedCard = document.getElementById('divSelectedCard');
+  divSelectedCard.innerHTML = arrayOfCards[0].cardId;
    
 }
 
@@ -168,7 +168,7 @@ async function getAllMatters(){
         // add a row for name and marks
         table += `<tr>
             <th>Name</th>
-            <th colspan="2">Matter Details</th>
+            <th colspan="2">Matter Details - `+ getCurrentDateTime().toString() +`</th>
           </tr>`;
         // now add another row to show subject
         table += `<tr>
@@ -223,7 +223,7 @@ async function createFeeEntryRequest(){
     "transactionDate": "2023-04-29",
     "billingDescription": "",
     "billingMode": "1",
-    "memo": "This is my memo - A21",
+    "memo": "This is my memo - " + getCurrentDateTime().toString(),
     "staffId": staffIdForFeeEntry
   };      
 
@@ -237,7 +237,7 @@ async function createFeeEntryRequest(){
   }  
 }
 
-//9. invoice - works, but check with Andy
+//9. invoice - works
 let btnCreateInvoiceRequest = document.getElementById("btnCreateInvoiceRequest");
 btnCreateInvoiceRequest.addEventListener("click", createInvoiceRequest);
 
@@ -248,15 +248,16 @@ async function createInvoiceRequest(){
         "autoNumber": true,
         "transactionDate": "2023-04-15",
         "dueDate": "2023-04-29",
-        "memo": "You have to pay me now",
+        "memo": "You have to pay me now - " + getCurrentDateTime().toString(),
         "status": 1, 
         "layoutId": ""
       };      
 
       try {
         const invoiceCreated = await sdk.accounting.createInvoice(invoiceRequest);
-        console.log("Invoice Created Value is: " + invoiceCreated);
-
+        
+        var invoiceRequestDiv = document.getElementById('invoiceRequestDiv');
+        invoiceRequestDiv.innerHTML = "Invoice Created: " + invoiceCreated + "/" + invoiceCreated.valueOf.toString();
 
         if (invoiceCreated) {
           console.log("Invoice is created");
@@ -268,5 +269,58 @@ async function createInvoiceRequest(){
       catch(err){
         console.log(err);
       }
+}  
+
+//10. POST api/v1/fees - works!
+let btnPostFees = document.getElementById("btnPostFees");
+btnPostFees.addEventListener("click", postFees);
+
+async function postFees(){  
+
+  const postFeesToken = await sdk.getRefreshedAccessToken();
+  console.log("Token: " + postFeesToken);
+
+  var feeId = "9231313C-4BD0-D8D4-B5FB-883D29B1E344";
+
+  const response2= await gateway_test.post('/api/v2/fees',
+      {
+        "TransactionDate": "2023-05-10T16:31:00Z",
+        "BillingDescription": "Telephone call with Ms C J Mathie no 2: " + getCurrentDateTime().toString(),
+        "Memo": "log",
+        "RateId": "No",
+        "RatePerHour": "",
+        "incTax": "",
+        "totalExTax": "0",
+        "totalTax": "0",
+        "totalIncTax": "0",
+        "SecondsElapsed": "86",
+        "SecondsPerUnit": 360,
+        "FeeUnits": "1",
+        "FeeHoursQuantity": "0.1",
+        "Timed": "1",
+        "FeeId": feeId,
+        "MatterId": sdk.leapContext.context.matterId,
+        "TaskCodeId": "8af7ec3d-6590-4700-9b1b-0ee989454276",
+        "TaxCodeId": "19c27283-5294-4cf3-aa7a-394c5edc7643",
+        "WorkDoneByStaffId": "c9970a0b-76dc-429f-a121-ea86ecff37e3",
+        "WarningAcknowledgments": [1001,1002]
+      
+    },
+      {
+        headers: {
+          'Authorization': `Bearer ${postFeesToken}` 
+        }
+      })
+      console.log(response2.status);
+      console.log(response2.data);
+
+      if (response2.status == "200" || response2.status == "201"){ 
+
+        const myObj = response2.data;
+        
+          var postFeesDiv = document.getElementById('postFeesSection');
+          postFeesDiv.innerHTML 
+            = "The response for the POST API call for " + feeId + " are: " +
+              " Message = " + myObj.Message;
+      }
 }
-  
