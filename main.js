@@ -6,8 +6,10 @@ import axios, {isCancel, AxiosError} from 'axios';
 // Define a variable for the SDK 
 const sdk = LeapHostSdkFactory.getInstance();
 //best practice: initialize the SDK once, in a central init code page of whatever framework they're using and then use the SDK all throughout their app
+///TODO: put the client ID in the init function & mention backwards compatibility
 sdk.init();
 
+//------------helper functions: start -----
 function getCurrentDateTime(){
   var currentdate = new Date();
 
@@ -19,6 +21,30 @@ function getCurrentDateTime(){
   + currentdate.getSeconds();
 }
 
+function getRandom(max) {
+  'use strict';
+  return Math.random() * max;
+}
+
+function generateSampleGUID(){
+  'use strict';
+  var id = '', i;
+
+  for (i = 0; i < 36; i++) {
+      if (i === 14) {
+          id += '4';
+      } else if (i === 19) {
+          id += '89ab'.charAt(getRandom(4));
+      } else if (i === 8 || i === 13 || i === 18 || i === 23) {
+          id += '-';
+      } else {
+          id += '0123456789abcdef'.charAt(getRandom(16));
+      }
+  }
+  return id;
+}
+//------------helper functions: end -----
+
 //1. get the token and current matter ID and display it - working
 let btnToken = document.getElementById("btnToken");
 btnToken.addEventListener("click", getToken);
@@ -26,21 +52,12 @@ btnToken.addEventListener("click", getToken);
 async function getToken(){
 
   console.log('Hey, Im the matter ID: ' + sdk.leapContext.context.matterId);
-  const tokenValue = await sdk.getRefreshedAccessToken();
-  document.getElementById("txtToken").value = tokenValue;  
+  const tokenValue = await sdk.getRefreshedAccessToken(); ////TODO: add comment details regarding TTL 
+  ////document.getElementById("txtToken").value = tokenValue;  
 
   var divToken = document.getElementById('divToken');
   divToken.innerHTML = tokenValue;
 }
-
-// function getToken(){  
-//   sdk.init().then(async () => {     
-//     console.log('Hey, Im the matter ID: ' + sdk.leapContext.context.matterId);
-//     const tokenValue = (await sdk.getRefreshedAccessToken());  
-//     document.getElementById("txtToken").value = tokenValue;
-//   });
-// }
-
 
 //2. open a matter - works
 let btnOpenMatter = document.getElementById("btnOpenMatter");
@@ -51,11 +68,11 @@ function openMatter(){
       //opens a matter
       //Request example:
        const request = {
-         "matterId": "8c857172-571e-564c-bc5a-7805cf76825c",
+         "matterId": "8c857172-571e-564c-bc5a-7805cf76825c", ////generate/automate
          "appSessionId": sdk.leapContext.hostInfo.appSessionId
        };
       
-      sdk.matter.openMatter(request);   
+      sdk.matter.openMatter(request);
 }
 
 //3. create a card - doesn't usually work but works intermittently
@@ -105,8 +122,8 @@ async function selectCard(){
     "appSessionId": sdk.system.appSessionId,
     "close": false,          
     "multiSelection": false,         
-    "searchString": "Rocket",        
-    "filter": "People"
+    "searchString": "Rocket", ////generate/automate
+    "filter": "People" ////generate/automate
   };
   
   const arrayOfCards = await sdk.card.selectCard(cardRequest);
@@ -206,7 +223,7 @@ btnCreateFeeEntryRequest.addEventListener("click", createFeeEntryRequest);
 
 async function createFeeEntryRequest(){
 
-  const staffIdForFeeEntry = await sdk.getDecodedRefreshedAccessToken().staffId;
+  const staffIdForFeeEntry = await sdk.getDecodedRefreshedAccessToken().staffId; ////TODO: add comment, add page to view details 
   
   console.log("Staff ID: " + staffIdForFeeEntry); 
 
@@ -215,8 +232,8 @@ async function createFeeEntryRequest(){
     "matterId": sdk.leapContext.context.matterId, 
     "appSessionId": sdk.leapContext.hostInfo.appSessionId,        
     
-    "taskCodeId": "c05c4eca-394d-45dc-97b3-3c29e4ff4329",
-    "taxCodeId": "71e08981-c1be-4ead-88c9-eee1f5d3f32d",
+    "taskCodeId": "c05c4eca-394d-45dc-97b3-3c29e4ff4329", ///needs to have valid task code ID
+    "taxCodeId": "71e08981-c1be-4ead-88c9-eee1f5d3f32d", ///needs to have valid tax code ID
     "quantity": 105,
     "amountEach": 200,
     "includeTax": false,
@@ -280,11 +297,12 @@ async function postFees(){
   const postFeesToken = await sdk.getRefreshedAccessToken();
   console.log("Token: " + postFeesToken);
 
-  var feeId = "9231313C-4BD0-D8D4-B5FB-883D29B1E344";
+  ////var feeId = "9231313C-4BD0-D8D4-B5FB-883D29B1E349"; ////generate/automate
+  var feeId = generateSampleGUID();  
 
   const response2= await gateway_test.post('/api/v2/fees',
       {
-        "TransactionDate": "2023-05-10T16:31:00Z",
+        "TransactionDate": "2023-05-10T16:31:00Z", ////generate/automate
         "BillingDescription": "Telephone call with Ms C J Mathie no 2: " + getCurrentDateTime().toString(),
         "Memo": "log",
         "RateId": "No",
@@ -300,9 +318,9 @@ async function postFees(){
         "Timed": "1",
         "FeeId": feeId,
         "MatterId": sdk.leapContext.context.matterId,
-        "TaskCodeId": "8af7ec3d-6590-4700-9b1b-0ee989454276",
-        "TaxCodeId": "19c27283-5294-4cf3-aa7a-394c5edc7643",
-        "WorkDoneByStaffId": "c9970a0b-76dc-429f-a121-ea86ecff37e3",
+        "TaskCodeId": "8af7ec3d-6590-4700-9b1b-0ee989454276", ////generate/automate
+        "TaxCodeId": "19c27283-5294-4cf3-aa7a-394c5edc7643", ////generate/automate
+        "WorkDoneByStaffId": "c9970a0b-76dc-429f-a121-ea86ecff37e3", ////generate/automate
         "WarningAcknowledgments": [1001,1002]
       
     },
