@@ -135,15 +135,10 @@ async function selectCard(){
     ////"filter": "People" 
   };
   
-  const arrayOfCards = await sdk.card.selectCard(cardRequest);
-
-  //console.log("Card ID: " + arrayOfCards[0].cardId);
-  //console.log("Card Desc: " + arrayOfCards[0].description);
-  //console.log("Card Shortname: " + arrayOfCards[0].shortName);
-  //console.log("Card Type: " + arrayOfCards[0].type);
+  const arrayOfCards = await sdk.card.selectCard(cardRequest);  
 
   var divSelectedCard = document.getElementById('divSelectedCard');
-  divSelectedCard.innerHTML = arrayOfCards[0].cardId;
+  divSelectedCard.innerHTML = arrayOfCards[0].cardId; ////you can also display the description, shortname or type of Card if available
    
 }
 
@@ -235,8 +230,7 @@ async function createFeeEntryRequest(){
   ////note: returns the staff ID used by the current session
   const staffIdForFeeEntry = await sdk.getDecodedRefreshedAccessToken().staffId;
 
-  const createFeeEntryRequest = {
-    //"matterId": "8c857172-571e-564c-bc5a-7805cf76825c",
+  const createFeeEntryRequest = {    
     "matterId": sdk.leapContext.context.matterId, 
     "appSessionId": sdk.leapContext.hostInfo.appSessionId,        
     
@@ -247,7 +241,7 @@ async function createFeeEntryRequest(){
     "includeTax": false,
     "transactionDate": "2023-04-29",
     "billingDescription": "",
-    "billingMode": "1",
+    "billingMode": "1", ////billingMode's possible values: NextInvoice = 0, LaterInvoice = 1, NotBillable = -1
     "memo": "This is my memo - " + getCurrentDateTime().toString(),
     "staffId": staffIdForFeeEntry
   };      
@@ -371,12 +365,7 @@ async function selectSingleMatter(){
 
         ////getCurrentDateTime().toString();
 
-        const myArray = response.data.matterList;
-
-        // var ele = document.getElementById('sel');
-        // birds.forEach(function(b) {
-        //   ele.innerHTML += '<option value="' + b.ID + '">' + b['Bird_Name'] + '</option>';
-        // })
+        const myArray = response.data.matterList;        
 
         var selectElement = document.getElementById('selectMatter');
 
@@ -391,6 +380,7 @@ async function selectSingleMatter(){
       }
 }
 
+////helper function to handle change event of select element
 function handleSelectChange(event) {
 
   // if you want to support some really old IEs, add
@@ -400,8 +390,7 @@ function handleSelectChange(event) {
 
   var value = selectElement.value;
   // to support really old browsers, you may use
-  // selectElement.value || selectElement.options[selectElement.selectedIndex].value;
-  // like el Dude has suggested
+  // selectElement.value || selectElement.options[selectElement.selectedIndex].value;  
 
   // do whatever you want with the value  
   alert(value);
@@ -415,75 +404,3 @@ async function chooseMatter(){
   
   openMatterFunction(selectElement.options[selectElement.selectedIndex].value);  
 }
-
-// async function show(id) {  
-//   var msg = document.getElementById('msg');
-//   if (!id) {
-//     msg.innerHTML = 'None selected';
-//   } else {
-//     msg.innerHTML = "Value selected is: " + id;
-//     // for (var i = 0; i < birds.length; i++) {
-//     //   if (Number(id) === birds[i].ID) {
-//     //     msg.innerHTML = birds[i].ID + " " + birds[i].Bird_Name;
-//     //     break;
-//     //   }
-//     // }
-//   }
-// }
-
-
-////11. GridView testing
-// let btnShowGrid = document.getElementById("btnShowGrid");
-// btnShowGrid.addEventListener("click", showGrid);
-
-// async function showGrid(){ 
-
-//   const gridData = [
-//     {
-//       id: '10012',
-//       city: 'Seoul',
-//       country: 'South Korea'
-//     },
-//     {
-//       id: '10013',
-//       city: 'Tokyo',
-//       country: 'Japan'    
-//     },
-//     {
-//       id: '10014',
-//       city: 'London',
-//       country: 'England'
-//     },
-//     {
-//       id: '10015',
-//       city: 'Ljubljana',
-//       country: 'Slovenia'
-//     },
-//     {
-//       id: '10016',
-//       city: 'Reykjavik',
-//       country: 'Iceland'
-//     }
-//   ];
-  
-//   const grid = new Grid({
-//     el: document.getElementById('myGrid'),
-//     data: gridData,
-//     scrollX: false,
-//     scrollY: false,    
-//     columns: [
-//       {
-//         header: 'ID',
-//         name: 'id'
-//       },
-//       {
-//         header: 'Status',
-//         name: 'status'        
-//       },
-//       {
-//         header: 'Description',
-//         name: 'desc'
-//       }    
-//     ]
-//   });  
-// }
