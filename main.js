@@ -1,7 +1,6 @@
-// Import the LEAP Host SDK
-import { LeapHostSdkFactory } from '@leapdev/leap-host';
-// Import the Axios client - we will use this for our API calls
-import axios, {isCancel, AxiosError} from 'axios';
+import { LeapHostSdkFactory } from '@leapdev/leap-host'; // Import the LEAP Host SDK
+import axios, {isCancel, AxiosError} from 'axios'; // Import the Axios client - we will use this for our API calls
+import Grid from 'tui-grid'; //import toast grid
 
 // Define a variable for the SDK 
 const sdk = LeapHostSdkFactory.getInstance();
@@ -45,37 +44,45 @@ function generateSampleGUID(){
 }
 //------------helper functions: end -----
 
-//1. get the token and current matter ID and display it - working
+//1. get the token and current matter ID and display it
 let btnToken = document.getElementById("btnToken");
 btnToken.addEventListener("click", getToken);
 
 async function getToken(){
 
   console.log('Hey, Im the matter ID: ' + sdk.leapContext.context.matterId);
-  const tokenValue = await sdk.getRefreshedAccessToken(); ////TODO: add comment details regarding TTL 
-  ////document.getElementById("txtToken").value = tokenValue;  
+  ////the getRefreshedAccessToken function checks if the access token will expire and has a mechanism to fetch a new one everytime it is called.
+  ////for best practices, always call the getRefreshedAccessToken function instead of caching and assigning the token to a global or system-wide variable
+  const tokenValue = await sdk.getRefreshedAccessToken(); 
 
   var divToken = document.getElementById('divToken');
   divToken.innerHTML = tokenValue;
 }
 
-//2. open a matter - works
+//2. open a matter
 let btnOpenMatter = document.getElementById("btnOpenMatter");
-btnOpenMatter.addEventListener("click", openMatter);
+btnOpenMatter.addEventListener("click", passMatter);
 
-function openMatter(){
-  
-      //opens a matter
-      //Request example:
-       const request = {
-         "matterId": "8c857172-571e-564c-bc5a-7805cf76825c", ////generate/automate
-         "appSessionId": sdk.leapContext.hostInfo.appSessionId
-       };
-      
-      sdk.matter.openMatter(request);
+function passMatter(){  
+  openMatterFunction("8c857172-571e-564c-bc5a-7805cf76825c");
 }
 
-//3. create a card - doesn't usually work but works intermittently
+function openMatterFunction(id){
+  //opens a matter
+  if (id == sdk.leapContext.context.matterId){
+    alert("Matter is already open.");
+  }
+  else{
+    const request = {
+      ////note: you cannot open another matter window with the same context. you always have to choose a different matter ID to load for this SDK method
+      "matterId": id, ////generate/automate         
+      "appSessionId": sdk.leapContext.hostInfo.appSessionId
+    };
+    sdk.matter.openMatter(request);
+  }
+}
+
+//3. create a card
 let btnCreateCard = document.getElementById("btnCreateCard");
 btnCreateCard.addEventListener("click", createCard);
 
@@ -83,6 +90,7 @@ async function createCard(){
 
   try 
   {    
+    ////creates a card & returns a createdCard object
     const createdCard = await sdk.card.createCard();
     
     var divCreatedCard = document.getElementById('divCreatedCard');
@@ -95,7 +103,7 @@ async function createCard(){
   
 }
 
-//4. open a dialog box - works
+//4. open a dialog box
 let btnOpenDialogBox = document.getElementById("btnOpenDialogBox");
 btnOpenDialogBox.addEventListener("click", openDialogBox);
 
@@ -121,24 +129,25 @@ async function selectCard(){
   const cardRequest = {      
     "appSessionId": sdk.system.appSessionId,
     "close": false,          
-    "multiSelection": false,         
-    "searchString": "Rocket", ////generate/automate
-    "filter": "People" ////generate/automate
+    "multiSelection": false
+    ////note: you can also add a default search string or filter category: MatterCards, Supplier, Company, Business or any tableIds
+    ////"searchString": "Rocket", 
+    ////"filter": "People" 
   };
   
   const arrayOfCards = await sdk.card.selectCard(cardRequest);
 
-  console.log("Card ID: " + arrayOfCards[0].cardId);
-  console.log("Card Desc: " + arrayOfCards[0].description);
-  console.log("Card Shortname: " + arrayOfCards[0].shortName);
-  console.log("Card Type: " + arrayOfCards[0].type);
+  //console.log("Card ID: " + arrayOfCards[0].cardId);
+  //console.log("Card Desc: " + arrayOfCards[0].description);
+  //console.log("Card Shortname: " + arrayOfCards[0].shortName);
+  //console.log("Card Type: " + arrayOfCards[0].type);
 
   var divSelectedCard = document.getElementById('divSelectedCard');
   divSelectedCard.innerHTML = arrayOfCards[0].cardId;
    
 }
 
-//6. call an API and get a single matter - works 
+//6. call an API and get a single matter 
 let btnGetSingleMatter = document.getElementById("btnGetSingleMatter");
 btnGetSingleMatter.addEventListener("click", getSingleMatter);
 
@@ -168,7 +177,7 @@ async function getSingleMatter(){
       }
 }
 
-//7. call an API and get all matters - works
+//7. call an API and get all matters
 let btnGetAllMatters = document.getElementById("btnGetAllMatters");
 btnGetAllMatters.addEventListener("click", getAllMatters);
 
@@ -217,15 +226,14 @@ async function getAllMatters(){
       }
 }
 
-//8. create fee entries- works, but clarify with Andy if it doesn't return any ID or async values
+//8. create fee entries
 let btnCreateFeeEntryRequest = document.getElementById("btnCreateFeeEntryRequest");
 btnCreateFeeEntryRequest.addEventListener("click", createFeeEntryRequest);
 
 async function createFeeEntryRequest(){
 
-  const staffIdForFeeEntry = await sdk.getDecodedRefreshedAccessToken().staffId; ////TODO: add comment, add page to view details 
-  
-  console.log("Staff ID: " + staffIdForFeeEntry); 
+  ////note: returns the staff ID used by the current session
+  const staffIdForFeeEntry = await sdk.getDecodedRefreshedAccessToken().staffId;
 
   const createFeeEntryRequest = {
     //"matterId": "8c857172-571e-564c-bc5a-7805cf76825c",
@@ -254,7 +262,7 @@ async function createFeeEntryRequest(){
   }  
 }
 
-//9. invoice - works
+//9. invoice
 let btnCreateInvoiceRequest = document.getElementById("btnCreateInvoiceRequest");
 btnCreateInvoiceRequest.addEventListener("click", createInvoiceRequest);
 
@@ -266,16 +274,22 @@ async function createInvoiceRequest(){
         "transactionDate": "2023-04-15",
         "dueDate": "2023-04-29",
         "memo": "You have to pay me now - " + getCurrentDateTime().toString(),
-        "status": 1, 
+        "status": 1, ////note: Unapproved = 0, Approved = 1, PrintedOrSent = 3
         "layoutId": ""
       };      
 
       try {
+
         const invoiceCreated = await sdk.accounting.createInvoice(invoiceRequest);
         
         var invoiceRequestDiv = document.getElementById('invoiceRequestDiv');
         invoiceRequestDiv.innerHTML = "Invoice Created: " + invoiceCreated + "/" + invoiceCreated.valueOf.toString();
 
+        ////note: createInvoice function should return a boolean value that will allow the developer to 
+        //// dictate logic of how the next action of their program should be based on the results of the function.
+        //// however, as of 15-May, this is throwing an error (ie: not returning a boolean function) as discussed with Andy/Tom Tran.
+        //// the invoice request still gets created, though. 
+        //// further investigation is ongoing.
         if (invoiceCreated) {
           console.log("Invoice is created");
         }
@@ -288,7 +302,7 @@ async function createInvoiceRequest(){
       }
 }  
 
-//10. POST api/v1/fees - works!
+//10. POST api/v1/fees 
 let btnPostFees = document.getElementById("btnPostFees");
 btnPostFees.addEventListener("click", postFees);
 
@@ -297,7 +311,6 @@ async function postFees(){
   const postFeesToken = await sdk.getRefreshedAccessToken();
   console.log("Token: " + postFeesToken);
 
-  ////var feeId = "9231313C-4BD0-D8D4-B5FB-883D29B1E349"; ////generate/automate
   var feeId = generateSampleGUID();  
 
   const response2= await gateway_test.post('/api/v2/fees',
@@ -320,15 +333,15 @@ async function postFees(){
         "MatterId": sdk.leapContext.context.matterId,
         "TaskCodeId": "8af7ec3d-6590-4700-9b1b-0ee989454276", ////generate/automate
         "TaxCodeId": "19c27283-5294-4cf3-aa7a-394c5edc7643", ////generate/automate
-        "WorkDoneByStaffId": "c9970a0b-76dc-429f-a121-ea86ecff37e3", ////generate/automate
-        "WarningAcknowledgments": [1001,1002]
-      
+        "WorkDoneByStaffId": "c9970a0b-76dc-429f-a121-ea86ecff37e3", ////generate/automate        
+        "WarningAcknowledgments": [1001,1002]              
     },
       {
         headers: {
           'Authorization': `Bearer ${postFeesToken}` 
         }
-      })
+      });
+      
       console.log(response2.status);
       console.log(response2.data);
 
@@ -342,3 +355,135 @@ async function postFees(){
               " Message = " + myObj.Message;
       }
 }
+
+//11. Select single matter
+let btnSelectSingleMatter = document.getElementById("btnSelectSingleMatter");
+btnSelectSingleMatter.addEventListener("click", selectSingleMatter);
+
+async function selectSingleMatter(){  
+
+    const allMattersToken = await sdk.getRefreshedAccessToken();
+    console.log("Token: " + allMattersToken);
+
+    const response = await (gateway_test.get('/api/v3/matters', { headers: {'Authorization': `Bearer ${allMattersToken}` }}));      
+      
+      if (response.status == "200" || response.status == "201"){ 
+
+        ////getCurrentDateTime().toString();
+
+        const myArray = response.data.matterList;
+
+        // var ele = document.getElementById('sel');
+        // birds.forEach(function(b) {
+        //   ele.innerHTML += '<option value="' + b.ID + '">' + b['Bird_Name'] + '</option>';
+        // })
+
+        var selectElement = document.getElementById('selectMatter');
+
+        for(var i = 0; i<myArray.length; i++){
+
+          selectElement.innerHTML += '<option value="' + myArray[i].matterId + '">' 
+            + myArray[i].matterId + ': ' + myArray[i].firstDescription + ' ' + myArray[i].customDescription + '</option>';
+        }          
+      }
+      else{
+        console.log("Error: API Call did not return a success call"); 
+      }
+}
+
+function handleSelectChange(event) {
+
+  // if you want to support some really old IEs, add
+  // event = event || window.event;
+
+  var selectElement = event.target;
+
+  var value = selectElement.value;
+  // to support really old browsers, you may use
+  // selectElement.value || selectElement.options[selectElement.selectedIndex].value;
+  // like el Dude has suggested
+
+  // do whatever you want with the value  
+  alert(value);
+}
+
+let btnChooseMatter = document.getElementById("btnChooseMatter");
+btnChooseMatter.addEventListener("click", chooseMatter);
+
+async function chooseMatter(){ 
+  var selectElement = document.getElementById('selectMatter');
+  
+  openMatterFunction(selectElement.options[selectElement.selectedIndex].value);  
+}
+
+// async function show(id) {  
+//   var msg = document.getElementById('msg');
+//   if (!id) {
+//     msg.innerHTML = 'None selected';
+//   } else {
+//     msg.innerHTML = "Value selected is: " + id;
+//     // for (var i = 0; i < birds.length; i++) {
+//     //   if (Number(id) === birds[i].ID) {
+//     //     msg.innerHTML = birds[i].ID + " " + birds[i].Bird_Name;
+//     //     break;
+//     //   }
+//     // }
+//   }
+// }
+
+
+////11. GridView testing
+// let btnShowGrid = document.getElementById("btnShowGrid");
+// btnShowGrid.addEventListener("click", showGrid);
+
+// async function showGrid(){ 
+
+//   const gridData = [
+//     {
+//       id: '10012',
+//       city: 'Seoul',
+//       country: 'South Korea'
+//     },
+//     {
+//       id: '10013',
+//       city: 'Tokyo',
+//       country: 'Japan'    
+//     },
+//     {
+//       id: '10014',
+//       city: 'London',
+//       country: 'England'
+//     },
+//     {
+//       id: '10015',
+//       city: 'Ljubljana',
+//       country: 'Slovenia'
+//     },
+//     {
+//       id: '10016',
+//       city: 'Reykjavik',
+//       country: 'Iceland'
+//     }
+//   ];
+  
+//   const grid = new Grid({
+//     el: document.getElementById('myGrid'),
+//     data: gridData,
+//     scrollX: false,
+//     scrollY: false,    
+//     columns: [
+//       {
+//         header: 'ID',
+//         name: 'id'
+//       },
+//       {
+//         header: 'Status',
+//         name: 'status'        
+//       },
+//       {
+//         header: 'Description',
+//         name: 'desc'
+//       }    
+//     ]
+//   });  
+// }

@@ -58,6 +58,21 @@
           <button id="btnPostFees" class="button" type="button">Post Fees</button>
           <div id="postFeesSection">Post API call result here</div>
         </div>
+        <br/><br/>
+        <div>
+          <button id="btnShowGrid" class="button" type="button">Show Grid</button>          
+          <div id="myGrid"></div>
+        </div>
+        <br/><br/>
+        <div>   
+          <button id="btnSelectSingleMatter" class="button" type="button">Select Single Matter</button>          
+          <label for="lblSelectMatter">Select a matter</label>
+          <select id="selectMatter" onchange="handleSelectChange(event)">
+            <option value="">-- Select --</option>
+          </select><br/>  
+          <button id="btnChooseMatter" class="button" type="button">Choose Matter</button>          
+          <p id="msg"></p>        
+        </div>
       </div>
     </div>
   </body>
