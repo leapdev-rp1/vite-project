@@ -11,14 +11,20 @@
     <script type="module" src="/main.js"></script>
     <div id="app">  
       <div>        
-        <h1 >LEAP Host SDK - POC App v1.005</h1>
+        <h1 >LEAP Host SDK - POC App v1.006</h1>
         <div>
           <button id="btnToken" class="button" type="button">Auth Token</button><br/>
           <div id="divToken">Auth Token here</div>
         </div>
         <br/>
-        <div>
-          <button id="btnOpenMatter" class="button" type="button">Open Matter</button>          
+        <div>   
+          <button id="btnLoadAllMatters" class="button" type="button">Load All Matters</button>          
+          <label for="lblSelectMatter">Select a matter</label>
+          <select id="selectMatter" onchange="handleSelectChange(event)">
+            <option value="">-- Select --</option>
+          </select><br/>  
+          <button id="btnChooseMatter" class="button" type="button">Choose Matter</button>          
+          <p id="msg"></p>        
         </div>
         <br/>
         <div>
@@ -54,25 +60,30 @@
           <div id="invoiceRequestDiv">Invoice Request result</div>
         </div>
         <br/>
-        <div>
+        <div class="container">
+          <label>TransactionDate: </label><span><input type="datetime-local" id="txtPostFees_TxnDate" name="txtPostFees_TxnDate"></span>
+          <label>Billing Description: </label><span><input type="text" name="txtPostFees_BillDesc" id="txtPostFees_BillDesc" value="Sample desc"/></span>
+          <label>Memo: </label><span><input type="text" name="txtPostFees_Memo" id="txtPostFees_Memo" value="log"/></span>
+          <label>RateID: </label><span><input type="text" name="txtPostFees_RateId" id="txtPostFees_RateId" value="No"/></span>
+          <label>RatePerHour: </label><span><input type="text" name="txtPostFees_RatePerHour" id="txtPostFees_RatePerHour" value=""/></span><br/>
+          <label>IncTax: </label><span><input type="text" name="txtPostFees_IncTax" id="txtPostFees_IncTax" value=""/></span><br/>
+          <label>TotalExTax: </label><span><input type="text" name="txtPostFees_TotalExTax" id="txtPostFees_TotalExTax" value="0"/></span><br/>
+          <label>TotalTax: </label><span><input type="text" name="txtPostFees_TotalTax" id="txtPostFees_TotalTax" value="0"/></span><br/>
+          <label>TotalIncTax: </label><span><input type="text" name="txtPostFees_TotalIncTax" id="txtPostFees_TotalIncTax" value="0"/></span><br/>
+          <label>TotalSecondsElapsed: </label><span><input type="text" name="txtPostFees_SecondsElapsed" id="txtPostFees_SecondsElapsed" value="86"/></span><br/>
+          <label>SecondsPerUnit: </label><span><input type="text" name="txtPostFees_SecondsPerUnit" id="txtPostFees_SecondsPerUnit" value="360"/></span><br/>
+          <label>FeeUnits: </label><span><input type="text" name="txtPostFees_FeeUnits" id="txtPostFees_FeeUnits" value="1"/></span><br/>
+          <label>FeeHoursQuantity: </label><span><input type="text" name="txtPostFees_FeeHoursQuantity" id="txtPostFees_FeeHoursQuantity" value="0.1"/></span><br/>
+          <label>Timed: </label><span><input type="text" name="txtPostFees_Timed" id="txtPostFees_Timed" value="1"/></span><br/><br/>
           <button id="btnPostFees" class="button" type="button">Post Fees</button>
-          <div id="postFeesSection">Post API call result here</div>
+          <div id="postFeesSection">Post API call result HERE</div>
         </div>
-        <br/><br/>
-        <div>
+        <!-- <br/><br/>
+        <div>s
           <button id="btnShowGrid" class="button" type="button">Show Grid</button>          
           <div id="myGrid"></div>
-        </div>
-        <br/><br/>
-        <div>   
-          <button id="btnSelectSingleMatter" class="button" type="button">Select Single Matter</button>          
-          <label for="lblSelectMatter">Select a matter</label>
-          <select id="selectMatter" onchange="handleSelectChange(event)">
-            <option value="">-- Select --</option>
-          </select><br/>  
-          <button id="btnChooseMatter" class="button" type="button">Choose Matter</button>          
-          <p id="msg"></p>        
-        </div>
+        </div> -->
+        <br/><br/>        
       </div>
     </div>
   </body>
